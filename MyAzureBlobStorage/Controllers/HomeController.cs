@@ -37,17 +37,12 @@ namespace MyAzureBlobStorage.Controllers
         [HttpPost]
         public ActionResult Upload(HttpPostedFileBase file)
         {
-            return Json(new { data = UploadFiles(file) }, "text/plain");
-        }
-
-        private ActionResult UploadFiles(HttpPostedFileBase files)
-        {
-            if (files != null)
+            if (file != null)
             {
-                var attachmentFileName = Path.GetFileName(files.FileName);
-                string _fileExtension = System.IO.Path.GetExtension(files.FileName);
-                byte[] filecontent = new byte[files.ContentLength];
-                files.InputStream.Read(filecontent, 0, files.ContentLength);
+                var attachmentFileName = Path.GetFileName(file.FileName);
+                string _fileExtension = System.IO.Path.GetExtension(file.FileName);
+                byte[] filecontent = new byte[file.ContentLength];
+                file.InputStream.Read(filecontent, 0, file.ContentLength);
 
 
                 CloudStorageAccount cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=http;AccountName=" + accountName + ";AccountKey=" + accountKey);
@@ -68,9 +63,9 @@ namespace MyAzureBlobStorage.Controllers
                     blob.UploadFromStream(stream, null, RequestOptions());
                 }
             }
-            return Json(true);
+            return RedirectToAction("About");
         }
-
+        
         private BlobRequestOptions RequestOptions()
         {
             return new BlobRequestOptions() { ServerTimeout = TimeSpan.FromMinutes(60), MaximumExecutionTime = TimeSpan.FromMinutes(60) };
