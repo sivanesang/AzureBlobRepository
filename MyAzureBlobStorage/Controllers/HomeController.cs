@@ -16,9 +16,8 @@ namespace MyAzureBlobStorage.Controllers
     {
         public const string accountName = "sivashan";
         public const string accountKey = "KUQJSK+WtkpdAFe3p0c8r2stjmvsvkTUqFFmXzdvU4ubSCMkqmTtOF8fparLDzUhwG4h7+w9375VZ+gk5QJEVg==";
-
         public const string connectionStringServiceBus = "Endpoint=sb://sivasservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Tlca5fEs98xChsLVtBH3ilUXVCP3jmUqIAYwaO0M1BE=";
-        public const string queueNameServiceBus = "mytestque";
+        public const string queueNameServiceBus = "mytestque1";
 
         public ActionResult Index()
         {
@@ -85,7 +84,10 @@ namespace MyAzureBlobStorage.Controllers
         public ActionResult SendMessagePost(MessageQueue model)
         {
 
+          
+
             var stringContent = model.MessageContent;
+            //model.MessageContent;
 
             var client = QueueClient.CreateFromConnectionString(connectionStringServiceBus, queueNameServiceBus);
             var message = new BrokeredMessage(stringContent);
