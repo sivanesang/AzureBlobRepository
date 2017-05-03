@@ -7,6 +7,8 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
+using MyAzureBlobStorage.Models;
+using Microsoft.ServiceBus.Messaging;
 
 namespace MyAzureBlobStorage.Controllers
 {
@@ -14,6 +16,9 @@ namespace MyAzureBlobStorage.Controllers
     {
         public const string accountName = "sivashan";
         public const string accountKey = "KUQJSK+WtkpdAFe3p0c8r2stjmvsvkTUqFFmXzdvU4ubSCMkqmTtOF8fparLDzUhwG4h7+w9375VZ+gk5QJEVg==";
+
+        public const string connectionStringServiceBus = "Endpoint=sb://sivasservicebus.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=Tlca5fEs98xChsLVtBH3ilUXVCP3jmUqIAYwaO0M1BE=";
+        public const string queueNameServiceBus = "mytestque";
 
         public ActionResult Index()
         {
@@ -70,5 +75,44 @@ namespace MyAzureBlobStorage.Controllers
         {
             return new BlobRequestOptions() { ServerTimeout = TimeSpan.FromMinutes(60), MaximumExecutionTime = TimeSpan.FromMinutes(60) };
         }
+
+        public ActionResult SendMessage()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult SendMessagePost(MessageQueue model)
+        {
+
+            var stringContent = model.MessageContent;
+
+            var client = QueueClient.CreateFromConnectionString(connectionStringServiceBus, queueNameServiceBus);
+            var message = new BrokeredMessage(stringContent);
+            client.Send(message);
+
+            return RedirectToAction("SendMessage");
+        }
+
+        public ActionResult ReceiveMessage()
+        {
+            var client = QueueClient.CreateFromConnectionString(connectionStringServiceBus, queueNameServiceBus);
+
+            List<MessageQueue> msgList = new List<MessageQueue>();
+
+            client.OnMessage(message =>
+            {
+                msgList.Add(new MessageQueue
+                {
+                    MessageId = message.MessageId,
+                    MessageBody = message.GetBody<String>()
+                });
+            });
+
+            return View(msgList);
+        }
+
+
+
     }
 }

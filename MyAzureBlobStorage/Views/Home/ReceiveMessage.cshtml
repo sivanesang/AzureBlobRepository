@@ -1,0 +1,41 @@
+﻿@{
+    ViewBag.Title = "Receive message";
+}
+@using MyAzureBlobStorage.Models
+@model List<MessageQueue>
+
+
+
+<hr>
+<h1>Received Message Queue</h1>
+<p>Once received, it will be cleared from the queue.</p>
+
+@if (Model != null && Model.Count > 0)
+{
+<table>
+    <tr>
+        <th>Message ID</th>
+        <th>Message</th>
+    </tr>
+    <tr>
+    @foreach (var item in Model)
+    {
+        <td>@item.MessageId</td>
+        <td>@item.MessageBody</td>
+    }
+    </tr>
+</table>
+}
+else
+{
+    <h6 style="color:#DC143C">Currenlty, No Queue.</h6>
+}
+<style>
+    table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+</style>

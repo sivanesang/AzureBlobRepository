@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "Send message";
+}
+
+@model MyAzureBlobStorage.Models.MessageQueue
+
+@using (Html.BeginForm("SendMessagePost", "Home", FormMethod.Post,
+                                        new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <fieldset>
+        <legend>Send Message</legend>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.MessageContent)
+        </div>
+        <div class="editor-field">
+            <input type="submit" value="Send Message" />
+        </div>
+    </fieldset>
+}
